@@ -82,6 +82,11 @@ def create_page(folder, filename):
 def get_config_info():
     """ Get the config / settings for the website
     """
+
+    if not os.path.isfile(SOURCE_DIR + CONFIG_FILE):
+        print "ERROR: Unable to find config file"
+        sys.exit(1)
+
     PARSER.read(SOURCE_DIR + CONFIG_FILE)
 
     dct = dict()
@@ -338,11 +343,9 @@ def get_menu(folder):
 
     if len(fld) == 1:
         folder1 = fld[0]
-    elif len(fld) == 2:
+    elif len(fld) == 2 or len(fld) == 3:
         folder1 = fld[0]
         folder2 = fld[1]
-
-    print "folder = " + folder
 
     tpl = get_template(TEMPLATE_MENU)
     template = Template(tpl)
@@ -374,10 +377,12 @@ SOURCE_DIR = ROOT_DIR + "source/"
 CONFIG = get_config_info()
 SITENAME = CONFIG['name']
 SITEURL = CONFIG['url']
-DEST_PATH = CONFIG['destination']
+HTML_DIR = CONFIG['destination']
 IGNORE_FILES = CONFIG['ignore_files']
 
-HTML_DIR = DEST_PATH + "public_html_test/"
+if not os.path.isdir:
+    print "Destination directory does not exists"
+    sys.exit(1)
 
 # Templates config
 TEMPLATE = SOURCE_DIR + "_template.html"

@@ -19,5 +19,5 @@ for folder, subs, files in os.walk(SOURCE_DIR):
             if filename != PAGE_FILE:
                 continue
 
-            if os.path.isfile(PAGE_FILE):
+            if os.path.isfile(folder + "/" + PAGE_FILE):
                 create_page(folder, filename)
