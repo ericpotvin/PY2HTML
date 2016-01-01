@@ -28,6 +28,7 @@ Example:
 [config]
 name = Name Of My Website
 url = mydomain.com
+destination = /path/where/the/website/is/generated/
 
 [menu]
 ignore_files = about,privacy-policy,terms-of-conditions,404 

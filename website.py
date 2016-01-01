@@ -88,6 +88,7 @@ def get_config_info():
     dct['ignore_files'] = PARSER.get('menu', 'ignore_files').split(",")
     dct['name'] = PARSER.get('config', 'name')
     dct['url'] = PARSER.get('config', 'url')
+    dct['destination'] = PARSER.get('config', 'destination')
 
     return dct
 
@@ -357,11 +358,10 @@ def get_menu(folder):
 #
 # Constants
 #
-
 PAGE_FILE = "page.ini"
-CONFIG_FILE = "config.ini"
 TEMPLATE = "tpl.html"
 PAGE_INDEX = "index.html"
+CONFIG_FILE = "config.ini"
 
 TYPE_ROOT = "root"
 TYPE_LIST = "list"
@@ -369,8 +369,17 @@ TYPE_PAGE = "page"
 
 ROOT_DIR = sys.argv[1] + ("" if sys.argv[1][-1:] == "/" else "/")
 SOURCE_DIR = ROOT_DIR + "source/"
-HTML_DIR = sys.argv[1] + "public_html_test/"
 
+# Config
+CONFIG = get_config_info()
+SITENAME = CONFIG['name']
+SITEURL = CONFIG['url']
+DEST_PATH = CONFIG['destination']
+IGNORE_FILES = CONFIG['ignore_files']
+
+HTML_DIR = DEST_PATH + "public_html_test/"
+
+# Templates config
 TEMPLATE = SOURCE_DIR + "_template.html"
 TEMPLATE_LIST_CATEGORY = SOURCE_DIR + "_list_category.html"
 TEMPLATE_LIST_ARTICLE = SOURCE_DIR + "_list_article.html"
@@ -379,16 +388,11 @@ TEMPLATE_PAGE_ARTICLE = SOURCE_DIR + "_page_article.html"
 TEMPLATE_BREADCRUMB = SOURCE_DIR + "_breadcrumb.html"
 TEMPLATE_MENU = SOURCE_DIR + "_menu.html"
 
-# Config
-CONFIG = get_config_info()
-SITENAME = CONFIG['name']
-SITEURL = CONFIG['url']
-IGNORE_FILES = CONFIG['ignore_files']
-
-MENU = set_menu()
-
 # Get the main template
 TEMPLATE_DATA = get_template(TEMPLATE)
+
+# Set the main menu
+MENU = set_menu()
 
 if DEBUG:
     print "ROOT_DIR = " + ROOT_DIR
