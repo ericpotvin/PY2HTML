@@ -9,6 +9,14 @@ import collections
 import datetime
 import os
 import sys
+import signal
+
+def signal_handler(sig, frame):
+    """Catch the CTRL+C signal"""
+    print '\nAborted: SIG: ' + str(sig) + " - frame:" + str(frame)
+    sys.exit(0)
+
+signal.signal(signal.SIGINT, signal_handler)
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -73,7 +81,10 @@ def create_page(folder, filename):
         MENU=get_menu(canonical_folder)
     )
 
-    print "Saving: " + save_file
+    if DEBUG:
+        print "Saving: " + save_file
+    else:
+        print ".",
 
     with open(save_file, 'w') as file_:
         file_.write(tpl)
@@ -94,6 +105,11 @@ def get_config_info():
     dct['name'] = PARSER.get('config', 'name')
     dct['url'] = PARSER.get('config', 'url')
     dct['destination'] = PARSER.get('config', 'destination')
+    dct['menu_order'] = PARSER.get('menu', 'menu_order')
+
+    if dct['menu_order']:
+        # TODO: build a for loop for multiple ordered menu
+        dct[dct['menu_order']] = PARSER.get('menu', dct['menu_order'])
 
     return dct
 
@@ -322,14 +338,31 @@ def set_menu():
         name = get_page_info(folder + "/" + PAGE_FILE, 0)['title']
 
         if len(splited) == 1:
+
             dct[fld] = collections.OrderedDict()
             dct[fld]['name'] = name
 
         elif len(splited) == 2:
+
             if 'child' not in dct[splited[0]]:
                 dct[splited[0]]['child'] = collections.OrderedDict()
 
-            dct[splited[0]]['child'][splited[1]] = name
+            # We are skipping now the "force menu"
+            # so we can build it later
+            if splited[0] != MENU_ORDER:
+                dct[splited[0]]['child'][splited[1]] = name
+
+    # Build the force menu
+    # TODO: Multiple force menu
+    if MENU_ORDER:
+
+        folder = SOURCE_DIR + MENU_ORDER + "/"
+        items = CONFIG[MENU_ORDER].split(',')
+
+        for item in items:
+            page = folder + item + "/" + PAGE_FILE
+            name = get_page_info(page, 9)['title']
+            dct[MENU_ORDER]['child'][item] = name
 
     return dct
 
@@ -379,6 +412,7 @@ SITENAME = CONFIG['name']
 SITEURL = CONFIG['url']
 HTML_DIR = CONFIG['destination']
 IGNORE_FILES = CONFIG['ignore_files']
+MENU_ORDER = CONFIG['menu_order']
 
 if not os.path.isdir:
     print "Destination directory does not exists"
