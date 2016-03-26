@@ -11,15 +11,18 @@ import os
 import sys
 import signal
 
+
 def signal_handler(sig, frame):
-    """Catch the CTRL+C signal"""
+    """ Catch the CTRL+C signal
+        :param sig: the signal
+        :param frame: the frame
+    """
     print '\nAborted: SIG: ' + str(sig) + " - frame:" + str(frame)
     sys.exit(0)
 
 signal.signal(signal.SIGINT, signal_handler)
 
 reload(sys)
-sys.setdefaultencoding('utf-8')
 
 # Enable debug mode (all the print)
 DEBUG = 0
@@ -42,6 +45,8 @@ if len(sys.argv) < 2:
 
 def create_page(folder, filename):
     """ Create the web page
+        :param folder: the folder name
+        :param filename: the filename
     """
     page_type = get_type(folder)
     canonical_folder = folder.replace(SOURCE_DIR, "")
@@ -65,7 +70,7 @@ def create_page(folder, filename):
     content = get_page_content(folder, page_type)
     year = date.today().year
 
-    #Get the page details
+    # Get the page details
     page = get_page_info(folder + "/" + PAGE_FILE, 0)
 
     # Render template
@@ -116,6 +121,8 @@ def get_config_info():
 
 def get_page_info(filename, level):
     """ Get the page config
+        :param filename: the filename
+        :param level: the level
     """
 
     PARSER.read(filename)
@@ -130,7 +137,7 @@ def get_page_info(filename, level):
     elif level == 2 or level == 3:
 
         if PARSER.has_option('info', 'created_date'):
-            item['created_date'] = datetimeformat(
+            item['created_date'] = date_time_format(
                 PARSER.get('info', 'created_date'))
 
         if PARSER.has_option('info', 'author'):
@@ -141,9 +148,8 @@ def get_page_info(filename, level):
 
 def get_template(filename):
     """ Get an HTML template
+        :param filename: the filename
     """
-
-    tpl = ""
 
     with open(filename, 'r') as myfile:
         tpl = myfile.read()
@@ -153,6 +159,7 @@ def get_template(filename):
 
 def get_breadcrumbs(folder):
     """ Get the page breadcrumbs
+        :param folder: the folder name
     """
 
     folder2 = ""
@@ -182,7 +189,8 @@ def get_breadcrumbs(folder):
 
 
 def get_type(folder):
-    """Get the type of the page
+    """ Get the type of the page
+        :param folder: the folder name
     """
 
     is_root = folder.replace(SOURCE_DIR, "") == ""
@@ -198,33 +206,34 @@ def get_type(folder):
 
 def has_child(folder):
     """ Current page has child?
+        :param folder: the folder name
     """
     return get_nb_child(folder) > 0
 
 
 def get_nb_child(folder):
     """ Get the number of child for a page
+        :param folder: the folder name
     """
     lst = next(os.walk(folder))[1]
     return len(lst)
 
 
-def get_page_content(folder, page_type):
+def get_page_content(fld, page_type):
     """ Get the page content
-    isHomePage: If this is the home page
-        Nothing needed, just load the page
-    hasChild: If this page has sub pages, show a list
-        Load _has_child.html and parse variables
-    Page: Show the page
-        Load _page.html and parse variables
+        :param fld: the folder name
+        :param page_type: the page type
+            isHomePage: If this is the home page, Nothing needed, load the page
+            hasChild: If this page has sub pages, show a list
+            Page: Show the page, Load _page.html and parse variables
     """
 
-    folder = folder + ("" if folder[-1:] == "/" else "/")
-    fileinfo = folder + PAGE_FILE
+    folder = fld + ("" if fld[-1:] == "/" else "/")
+    file_info = folder + PAGE_FILE
     filename = folder + PAGE_INDEX
     level = len(folder.replace(SOURCE_DIR, "").split("/")) - 1
     if DEBUG:
-        print "(get_page_content) fileinfo : " + fileinfo
+        print "(get_page_content) file_info : " + file_info
         print "(get_page_content) filename : " + filename
         print "(get_page_content) level : " + str(level)
 
@@ -266,7 +275,7 @@ def get_page_content(folder, page_type):
             items.append(item)
 
         # Get page info
-        page = get_page_info(fileinfo, 9)
+        page = get_page_info(file_info, 9)
 
         template = Template(tpl)
         content = template.render(
@@ -283,7 +292,7 @@ def get_page_content(folder, page_type):
         else:
             return ""
 
-        page = get_page_info(fileinfo, level)
+        page = get_page_info(file_info, level)
         page_content = get_template(filename)
         template = Template(tpl)
 
@@ -305,8 +314,10 @@ def get_page_content(folder, page_type):
     return content
 
 
-def datetimeformat(value, style='%A %B %d, %Y'):
+def date_time_format(value, style='%A %B %d, %Y'):
     """ Get a human readable date format
+         :param value: the date time
+         :param style: the style / format
     """
     return datetime.datetime.fromtimestamp(
         int(value)).strftime(style)
@@ -369,6 +380,7 @@ def set_menu():
 
 def get_menu(folder):
     """ Get the main menu
+        :param folder: the folder name
     """
     folder1 = ""
     folder2 = ""
@@ -395,7 +407,6 @@ def get_menu(folder):
 # Constants
 #
 PAGE_FILE = "page.ini"
-TEMPLATE = "tpl.html"
 PAGE_INDEX = "index.html"
 CONFIG_FILE = "config.ini"
 
