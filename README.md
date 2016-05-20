@@ -47,4 +47,4 @@ The content of the page in HTML format
 
 ## Generate
 
-./generate.py /path/to/website-source/
+./generate.py /path/to/website/
