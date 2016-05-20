@@ -6,6 +6,7 @@ from datetime import date
 from jinja2 import Template
 
 import collections
+import codecs
 import datetime
 import os
 import sys
@@ -91,8 +92,8 @@ def create_page(folder, filename):
     else:
         print ".",
 
-    with open(save_file, 'w') as file_:
-        file_.write(tpl)
+    with codecs.open(save_file, "w", "utf8") as file_save:
+        file_save.write(tpl)
 
 
 def get_config_info():
@@ -151,8 +152,8 @@ def get_template(filename):
         :param filename: the filename
     """
 
-    with open(filename, 'r') as myfile:
-        tpl = myfile.read()
+    with codecs.open(filename, "r", "utf8") as my_file:
+        tpl = my_file.read()
 
     return tpl
 
@@ -240,7 +241,7 @@ def get_page_content(fld, page_type):
     content = ""
 
     if page_type == TYPE_ROOT:
-        with open(filename) as file_read:
+        with codecs.open(filename, "r", "utf8") as file_read:
             content = file_read.read()
 
     elif page_type == TYPE_LIST:
