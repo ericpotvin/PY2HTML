@@ -5,6 +5,13 @@ A simple Python script that generates a static HTML website
 ## Requirements
 
 Python 2.7
+Jinja2
+
+### Install Jinja2
+```
+sudo apt-get install python-pip
+sudo pip install jinja2
+```
 
 ### page.ini
 
