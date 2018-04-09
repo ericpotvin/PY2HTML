@@ -1,3 +1,4 @@
+# coding=utf-8
 """ Website Library
 """
 
@@ -20,6 +21,7 @@ def signal_handler(sig, frame):
     """
     print '\nAborted: SIG: ' + str(sig) + " - frame:" + str(frame)
     sys.exit(0)
+
 
 signal.signal(signal.SIGINT, signal_handler)
 
@@ -336,33 +338,33 @@ def set_menu():
         files.sort()
 
         fld = folder.replace(SOURCE_DIR, "")
-        splited = fld.split("/")
+        splitted = fld.split("/")
 
-        if len(splited) >= 3:
+        if len(splitted) >= 3:
             continue
 
-        if len(splited[0]) == 0:
+        if len(splitted[0]) == 0:
             continue
 
-        if splited[0] in IGNORE_FILES:
+        if splitted[0] in IGNORE_FILES:
             continue
 
         name = get_page_info(folder + "/" + PAGE_FILE, 0)['title']
 
-        if len(splited) == 1:
+        if len(splitted) == 1:
 
             dct[fld] = collections.OrderedDict()
             dct[fld]['name'] = name
 
-        elif len(splited) == 2:
+        elif len(splitted) == 2:
 
-            if 'child' not in dct[splited[0]]:
-                dct[splited[0]]['child'] = collections.OrderedDict()
+            if 'child' not in dct[splitted[0]]:
+                dct[splitted[0]]['child'] = collections.OrderedDict()
 
             # We are skipping now the "force menu"
             # so we can build it later
-            if splited[0] != MENU_ORDER:
-                dct[splited[0]]['child'][splited[1]] = name
+            if splitted[0] != MENU_ORDER:
+                dct[splitted[0]]['child'][splitted[1]] = name
 
     # Build the force menu
     # TODO: Multiple force menu
@@ -404,12 +406,36 @@ def get_menu(folder):
     return content
 
 
+def generate_sitemap(urls):
+    """ Generate the sitemap
+        :param urls: The urls
+    """
+
+    tpl = get_template(TEMPLATE_SITEMAP)
+    template = Template(tpl)
+
+    content = template.render(
+        URLS=urls
+    )
+
+    save_file = HTML_DIR + SITEMAP_FILE
+
+    if DEBUG:
+        print "Saving: " + save_file
+    else:
+        print ".",
+
+    with codecs.open(save_file, "w", "utf8") as file_save:
+        file_save.write(content)
+
+
 #
 # Constants
 #
 PAGE_FILE = "page.ini"
 PAGE_INDEX = "index.html"
 CONFIG_FILE = "config.ini"
+SITEMAP_FILE = "sitemap.xml"
 
 TYPE_ROOT = "root"
 TYPE_LIST = "list"
@@ -438,6 +464,7 @@ TEMPLATE_PAGE = SOURCE_DIR + "_page.html"
 TEMPLATE_PAGE_ARTICLE = SOURCE_DIR + "_page_article.html"
 TEMPLATE_BREADCRUMB = SOURCE_DIR + "_breadcrumb.html"
 TEMPLATE_MENU = SOURCE_DIR + "_menu.html"
+TEMPLATE_SITEMAP = SOURCE_DIR + SITEMAP_FILE
 
 # Get the main template
 TEMPLATE_DATA = get_template(TEMPLATE)
