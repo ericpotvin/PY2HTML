@@ -429,6 +429,33 @@ def generate_sitemap(urls):
         file_save.write(content)
 
 
+def generate_rss(urls):
+    """ Generate sitemap
+        :param urls: The urls
+    """
+    tpl = get_template(TEMPLATE_RSS)
+    template = Template(tpl)
+
+    content = template.render(
+        RSS=urls
+    )
+
+    save_file = HTML_DIR + RSS_FILE
+
+    if DEBUG:
+        print "Saving: " + save_file
+    else:
+        print ".",
+
+    with codecs.open(save_file, "w", "utf8") as file_save:
+        file_save.write(content)
+
+
+def is_feed(page):
+    invalid = ["privacy-policy", "codebase", "about", "terms-of-conditions", "contribute"]
+    return page not in invalid
+
+
 #
 # Constants
 #
@@ -436,6 +463,7 @@ PAGE_FILE = "page.ini"
 PAGE_INDEX = "index.html"
 CONFIG_FILE = "config.ini"
 SITEMAP_FILE = "sitemap.xml"
+RSS_FILE = "rss.xml"
 
 TYPE_ROOT = "root"
 TYPE_LIST = "list"
@@ -465,6 +493,7 @@ TEMPLATE_PAGE_ARTICLE = SOURCE_DIR + "_page_article.html"
 TEMPLATE_BREADCRUMB = SOURCE_DIR + "_breadcrumb.html"
 TEMPLATE_MENU = SOURCE_DIR + "_menu.html"
 TEMPLATE_SITEMAP = SOURCE_DIR + SITEMAP_FILE
+TEMPLATE_RSS = SOURCE_DIR + RSS_FILE
 
 # Get the main template
 TEMPLATE_DATA = get_template(TEMPLATE)
@@ -479,3 +508,5 @@ if DEBUG:
     print "TEMPLATE = " + TEMPLATE
     print "SITENAME = " + SITENAME
     print "SITEURL = " + SITEURL
+    print "SITEMAP_FILE = " + SITEMAP_FILE
+    print "RSS_FILE = " + RSS_FILE
