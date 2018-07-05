@@ -114,6 +114,7 @@ def get_config_info():
     dct['url'] = PARSER.get('config', 'url')
     dct['destination'] = PARSER.get('config', 'destination')
     dct['menu_order'] = PARSER.get('menu', 'menu_order')
+    dct['version'] = PARSER.get('config', 'version')
 
     if dct['menu_order']:
         # TODO: build a for loop for multiple ordered menu
@@ -479,19 +480,22 @@ SITEURL = CONFIG['url']
 HTML_DIR = CONFIG['destination']
 IGNORE_FILES = CONFIG['ignore_files']
 MENU_ORDER = CONFIG['menu_order']
+VERSION = "../_v" + CONFIG['version'] + "/"
 
 if not os.path.isdir:
     print "Destination directory does not exists"
     sys.exit(1)
 
 # Templates config
-TEMPLATE = SOURCE_DIR + "_template.html"
-TEMPLATE_LIST_CATEGORY = SOURCE_DIR + "_list_category.html"
-TEMPLATE_LIST_ARTICLE = SOURCE_DIR + "_list_article.html"
-TEMPLATE_PAGE = SOURCE_DIR + "_page.html"
-TEMPLATE_PAGE_ARTICLE = SOURCE_DIR + "_page_article.html"
-TEMPLATE_BREADCRUMB = SOURCE_DIR + "_breadcrumb.html"
-TEMPLATE_MENU = SOURCE_DIR + "_menu.html"
+VERSION_DIR = SOURCE_DIR + VERSION
+TEMPLATE = VERSION_DIR + "_template.html"
+TEMPLATE_LIST_CATEGORY = VERSION_DIR + "_list_category.html"
+TEMPLATE_LIST_ARTICLE = VERSION_DIR + "_list_article.html"
+TEMPLATE_PAGE = VERSION_DIR + "_page.html"
+TEMPLATE_PAGE_ARTICLE = VERSION_DIR + "_page_article.html"
+TEMPLATE_BREADCRUMB = VERSION_DIR + "_breadcrumb.html"
+TEMPLATE_MENU = VERSION_DIR + "_menu.html"
+# sitemap and rss
 TEMPLATE_SITEMAP = SOURCE_DIR + SITEMAP_FILE
 TEMPLATE_RSS = SOURCE_DIR + RSS_FILE
 
