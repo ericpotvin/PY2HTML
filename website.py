@@ -85,7 +85,9 @@ def create_page(folder, filename):
         SITE_URL=SITEURL,
         PAGE=content,
         YEAR=year,
+        VERSION=VERSION_NUMBER,
         FOLDER=canonical_folder,
+        BREADCRUMBS=get_breadcrumbs(folder),
         MENU=get_menu(canonical_folder)
     )
 
@@ -169,10 +171,11 @@ def get_breadcrumbs(folder):
     folder2 = ""
     folder3 = ""
     folder = folder.replace(SOURCE_DIR, "").split("/")
-    length = len(folder) - 1
+    length = len(folder)
 
-    if length > 2:
+    if length > 1:
         folder2 = folder[0]
+    if length > 2:
         folder3 = folder[1]
 
     if DEBUG:
@@ -284,7 +287,8 @@ def get_page_content(fld, page_type):
         template = Template(tpl)
         content = template.render(
             PAGE_TITLE=page['title'],
-            records=items
+            records=items,
+            VERSION=VERSION_NUMBER
         )
 
     else:
@@ -303,16 +307,17 @@ def get_page_content(fld, page_type):
         if level == 1:
             content = template.render(
                 PAGE_TITLE=page['title'],
-                CONTENT=page_content
+                CONTENT=page_content,
+                VERSION=VERSION_NUMBER
             )
 
         elif level == 3:
             content = template.render(
                 PAGE_TITLE=page['title'],
-                BREADCRUMBS=get_breadcrumbs(folder),
                 CREATED_DATE=page['created_date'],
                 AUTHOR=page['author'],
-                CONTENT=page_content
+                CONTENT=page_content,
+                VERSION=VERSION_NUMBER
             )
 
     return content
@@ -480,7 +485,8 @@ SITEURL = CONFIG['url']
 HTML_DIR = CONFIG['destination']
 IGNORE_FILES = CONFIG['ignore_files']
 MENU_ORDER = CONFIG['menu_order']
-VERSION = "../_v" + CONFIG['version'] + "/"
+VERSION_NUMBER = CONFIG['version']
+VERSION = "../_v" + VERSION_NUMBER + "/"
 
 if not os.path.isdir:
     print "Destination directory does not exists"
